@@ -1,2 +1,0 @@
-# testingOledCode
-For testing purposes
