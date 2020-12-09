@@ -124,7 +124,7 @@ def get_measurement_data(csv_path,txt_path):
                 div_no = int(filename1[i+2] )
                 #print(div_no)
         s_name1 = filename1
-        s_name1 = 'processed-'+s_name1
+        #s_name1 = 'processed-'+s_name1 # we no longer want 'propcessed' in file names
         div_area= div_area_lookup_table[div_no] #in cm2        
 
 

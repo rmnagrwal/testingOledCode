@@ -61,12 +61,12 @@ txt_path=getfilepath('Spectrum_raw')
 
 #calling get_measurement_data.
 (biasing_data_table, wavelength_counts_table, area1, div_no, s_name1 ) = get_measurement_data(csv_path,txt_path)
-s_name2= get_date_time()
+#s_name2= get_date_time() #this is no longer required
 
 #output_directory1 is same as input directory. 
 # All processed files would be saved there with the same stating name of the biasing data csv file with a prefix processed
 output_directory1 = getfolderpath('Output Excel Files and Graphs')
-output_directory1=os.path.join(output_directory1,s_name2)
+output_directory1=os.path.join(output_directory1,s_name1)
 os.mkdir(output_directory1)
 
 #calling get_calculated_data
@@ -126,7 +126,7 @@ plotlineargraph2(output_directory1, format1, calculated_data_table['Bias Voltage
     calculated_data_table['Current density (mA/cm2)'] ,'Bias voltage [Volts]',\
         'current density [mA/cm2] [in log]', 'JVLgraph(log)',s_name1,\
             calculated_data_table['Bias Voltage(Volts)'] ,\
-                calculated_data_table['Luminance [cd/m2]'] , 'Luminance [cd/m2]', 'log' )
+                calculated_data_table['Luminance [cd/m2]'] , 'Luminance [cd/m2] [in log]', 'log', 'log' )
 
 
 #saving the pandas dataframes in csv format
