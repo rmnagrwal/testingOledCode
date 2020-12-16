@@ -21,6 +21,10 @@ def get_calculated_data(biasing_data_table, wavelength_counts_table, conversion_
     nrow_cf_spectrum_table = conversion_factor_spectrum_table.shape[0]
     nrow_biasing_data_table = biasing_data_table.shape[0]
     nrow_wavelength_counts_table = wavelength_counts_table.shape[0]
+    intermediateValues = {}
+    intermediateValues['p_correction_factor'] = p_correction_factor
+    intermediateValues['area (in cm2)'] = area1
+    intermediateValues['div_no'] = div_no
     
         
     pi=3.14
@@ -55,9 +59,48 @@ def get_calculated_data(biasing_data_table, wavelength_counts_table, conversion_
            max_intensity = wavelength_counts_table['counts'].loc[i]
            max_wl_index = i
     max_wl = wavelength_counts_table['wavelength'].loc[max_wl_index]
+    half_max_wl = ()
+    half_max_intensity = int(max_intensity/2)
+    j=0
+    # print(half_max_intensity)
+    while modified_wavelength_counts['counts'].loc[j]<half_max_intensity:
+        j=j+1
+    # print(j, modified_wavelength_counts['counts'].loc[j],modified_wavelength_counts['wavelength'].loc[j])
+    if(int(modified_wavelength_counts['counts'].loc[j])==half_max_intensity):
+        half_max_wl += (modified_wavelength_counts['wavelength'].loc[j],)
+        j=j+1
+    else:
+        curr_wl = modified_wavelength_counts['wavelength'].loc[j]
+        prev_wl = modified_wavelength_counts['wavelength'].loc[j-1]
+        curr_counts = modified_wavelength_counts['counts'].loc[j]
+        prev_counts = modified_wavelength_counts['counts'].loc[j-1]
+        approx_wl = prev_wl + ((curr_wl-prev_wl)/(curr_counts-prev_counts))*(half_max_intensity-prev_counts)
+        half_max_wl += (approx_wl,)
+
+    while modified_wavelength_counts['counts'].loc[j]>half_max_intensity:
+        j=j+1
+    # print(j, modified_wavelength_counts['counts'].loc[j], modified_wavelength_counts['wavelength'].loc[j])
+    if(int(modified_wavelength_counts['counts'].loc[j])==half_max_intensity):
+        half_max_wl += (modified_wavelength_counts['wavelength'].loc[j],)
+    else:
+        curr_wl = modified_wavelength_counts['wavelength'].loc[j]
+        prev_wl = modified_wavelength_counts['wavelength'].loc[j-1]
+        curr_counts = modified_wavelength_counts['counts'].loc[j]
+        prev_counts = modified_wavelength_counts['counts'].loc[j-1]
+        approx_wl = prev_wl + ((curr_wl-prev_wl)/(curr_counts-prev_counts))*(half_max_intensity-prev_counts)
+        half_max_wl += (approx_wl,)
+    
+    # print(half_max_wl[1],half_max_wl[0])
+    fwhm = half_max_wl[1] - half_max_wl[0]
 
 
-    print('maximun intensity wavelength is '+str(max_wl)+'nm')
+
+    intermediateValues['lymbda_max (in nm)'] = max_wl
+    intermediateValues['max_counts (arb. units)'] = max_intensity
+    intermediateValues['fwhm (in nm)'] = fwhm
+
+
+    # print('maximun intensity wavelength is '+str(max_wl)+'nm')
     j=1
     while max_wl > responsivity_table['wavelength'].loc[j] :
         j=j+1
@@ -72,6 +115,7 @@ def get_calculated_data(biasing_data_table, wavelength_counts_table, conversion_
     else:
         responsivity = responsivity_table['responsivity'].loc[j-1] + (( responsivity_table['responsivity'].loc[j] - responsivity_table['responsivity'].loc[j-1] )/( responsivity_table['wavelength'].loc[j] - responsivity_table['wavelength'].loc[j-1] ))*last_digit
 
+    intermediateValues['responsivity'] = responsivity
 
 
 
@@ -124,4 +168,4 @@ def get_calculated_data(biasing_data_table, wavelength_counts_table, conversion_
     #print(calculated_result)
 
 
-    return ( calculated_result, modified_wavelength_counts )
+    return ( calculated_result, modified_wavelength_counts, intermediateValues )

@@ -14,6 +14,7 @@ from graphFileType import getFormat
 import sys
 import platform
 import os
+import csv
 from get_date_time import get_date_time
 
 dashLine="------------------------------------------------------------------------------------------------------------"
@@ -70,9 +71,9 @@ output_directory1=os.path.join(output_directory1,s_name1)
 os.mkdir(output_directory1)
 
 #calling get_calculated_data
-(calculated_data_table, modified_wavelength_counts) = get_calculated_data(\
+(calculated_data_table, modified_wavelength_counts, intermediateValues) = get_calculated_data(\
     biasing_data_table, wavelength_counts_table, conversion_factor_spectrum_table , responsivity_table, area1, div_no, True)
-
+print(intermediateValues)
 #getting the format in which graphs have to be saved
 format1 = getFormat(True)
 
@@ -130,6 +131,18 @@ plotlineargraph2(output_directory1, format1, calculated_data_table['Bias Voltage
 
 
 #saving the pandas dataframes in csv format
+intermediateValuesList = []
+for key in intermediateValues:
+    intermediateValuesList.append(key)
+    intermediateValuesList.append(intermediateValues[key])
+    # intermediateValuesList.append('')
+
 calculated_data_table.to_csv(output_directory1+ connector1 +s_name1+ 'calculated_data_table.csv')
+with open(output_directory1+ connector1 +s_name1+ 'calculated_data_table.csv', 'a') as newFile:
+    newFileWriter = csv.writer(newFile)
+    newFileWriter.writerow([''])
+    newFileWriter.writerow([''])
+    newFileWriter.writerow(intermediateValuesList)
+
 modified_wavelength_counts.to_csv(output_directory1+ connector1 +s_name1+ 'modified_wavelength_counts.csv')
 print(dashLine+"Completed!!!!"+dashLine)
