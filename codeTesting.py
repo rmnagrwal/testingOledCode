@@ -125,7 +125,7 @@ plotlineargraph2(output_directory1, format1, calculated_data_table['Bias Voltage
                 calculated_data_table['Luminance [cd/m2]'] , 'Luminance [cd/m2]' )
 plotlineargraph2(output_directory1, format1, calculated_data_table['Bias Voltage(Volts)'] ,\
     calculated_data_table['Current density (mA/cm2)'] ,'Bias voltage [Volts]',\
-        'current density [mA/cm2] [in log]', 'JVLgraph(log)',s_name1,\
+        'current density[mA/cm2][log]', 'JVLgraph(log)',s_name1,\
             calculated_data_table['Bias Voltage(Volts)'] ,\
                 calculated_data_table['Luminance [cd/m2]'] , 'Luminance [cd/m2] [in log]', 'log', 'log' )
 
